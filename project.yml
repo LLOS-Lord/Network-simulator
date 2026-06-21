@@ -1,0 +1,61 @@
+name: NetworkConditioner
+options:
+  bundleIdPrefix: com.networkconditioner
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+
+configs:
+  Debug: debug
+  Release: release
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    TARGETED_DEVICE_FAMILY: "1"
+    # Signed manually afterwards with ldid for TrollStore — Xcode's own
+    # signing is turned off so it doesn't fight with that step.
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGNING_REQUIRED: NO
+    CODE_SIGNING_ALLOWED: NO
+    ENABLE_BITCODE: NO
+
+targets:
+  NetworkConditioner:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: NetworkConditionerApp
+      - path: Shared
+    info:
+      path: NetworkConditionerApp/Info.plist
+    entitlements:
+      path: NetworkConditionerApp/NetworkConditionerApp.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.networkconditioner.app
+        PRODUCT_NAME: NetworkConditioner
+        INFOPLIST_FILE: NetworkConditionerApp/Info.plist
+    dependencies:
+      - target: ConditionerExtension
+        embed: true
+        codeSign: false
+
+  ConditionerExtension:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: ConditionerExtension
+      - path: Shared
+    info:
+      path: ConditionerExtension/Info.plist
+    entitlements:
+      path: ConditionerExtension/ConditionerExtension.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.networkconditioner.app.extension
+        PRODUCT_NAME: ConditionerExtension
+        INFOPLIST_FILE: ConditionerExtension/Info.plist
+        SKIP_INSTALL: YES
